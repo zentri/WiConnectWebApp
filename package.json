@@ -1,0 +1,36 @@
+{
+  "name": "wiconnect_webapp",
+  "description": "WiConnect WebApp",
+  "version": "0.0.0",
+  "author": {
+    "name": "Andrew Mitchell",
+    "email": "andrew.mitchell@ack.me"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "main": "server.js",
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "dependencies": {
+    "express": "latest",
+    "jade": "^1.7.0",
+    "less": "^1.7.5"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jade": "^0.12.0",
+    "grunt-contrib-less": "^0.11.4",
+    "grunt-contrib-uglify": "^0.6.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-compress": "^0.12.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-git-describe": "^2.3.2",
+    "grunt-bumpup": "^0.6.2",
+    "grunt-tagrelease": "^0.3.3",
+    "grunt-shell": "^1.1.1",
+    "grunt-htmlclean": "^2.3.2"
+  }
+}

@@ -1,0 +1,89 @@
+@import "mixins.less";
+@import "variables.less";
+
+#system-modal {
+  position: fixed;
+  display: none;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  .modal-background {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(125,125,125,0.5);
+  }
+
+  .modal {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    left: 0;
+    bottom: auto;
+    margin: 0 auto;
+    width: 66%;
+    background: none;
+    .transform(translateY(-50%));
+
+    .content {
+
+      >div {
+        height: 48px;
+        margin-top: 48px;
+
+        &.progress-bar {
+          width: 50%;
+          margin: 32px auto 8px auto;
+          height: 4px;
+          background: @light;
+
+          .progress {
+            width: 0;
+            background: @blue;
+            height: 4px;
+            border-radius: 1px;
+            .transition(width 1.5s);
+          }
+        }
+      }
+
+      h2 {
+        text-align: center;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        margin: 16px;
+        width: 32px;
+        height: 32px;
+        .cross();
+        .transform(rotate(45deg));
+        background-size: contain;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+@media(max-width: 768px){
+  #system-modal {
+
+    .modal {
+
+      .content {
+
+        &>div {
+          height: auto;
+          margin: 24px 0 0 0;
+        }
+      }
+    }
+  }
+}
+

@@ -1,0 +1,244 @@
+@import "mixins.less";
+@import "variables.less";
+
+
+.browser {
+
+  h1 {
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    font-weight: 400;
+    margin: 8px 0;
+  }
+
+  #dropbox {
+    position: relative;
+    height: 120px;
+    padding-top: 12px;
+    border: 5px dashed #eee;
+    color: #ccc;
+    font-size:24px;
+    line-height:24px;
+    text-align: center;
+    .transition(color 0.3s, border-color 0.3s;);
+
+    &.over{
+      border-color: @blue;
+      color: @blue;
+    }
+
+    &.dropped {
+      border-color: @icon-green;
+      color: @icon-green;
+      padding-top: 40px;
+    }
+
+    span {
+      font-size: 16px;
+      line-height: 32px;
+    }
+
+    .add-btn {
+      position: relative;
+      display: block;
+      background: #eee;
+      color: @medium;
+      text-align: center;
+      max-width: 160px;
+      margin: 0 auto;
+      padding: 0 8px;
+      height: 24px;
+      font-size: 11pt;
+      line-height: 24px;
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      .box-shadow(1px 2px 1px rgba(0,0,0,0.125));
+      .transition(box-shadow 0.3s);
+
+      &:hover {
+        .box-shadow(1px 2px 1px rgba(0,0,0,0.25));
+      }
+
+      input[type="file"] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        padding: 0;
+        opacity: 0 !important;
+        cursor: pointer;
+      }
+    }
+
+    .overwrite {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+
+      h4 {
+        display: inline-block;
+        margin-top: 12px;
+        font-size: 10pt;
+        color: #bbb;
+      }
+
+      .wiconnect-cbx {
+        top: 4px;
+        right: 8px;
+        margin: 0 4px;
+      }
+    }
+  }
+
+  .file-queue, .file-system {
+    margin-top: 24px;
+
+    .file {
+      position: relative;
+      border-bottom: 1px dashed #eee;
+      height: 32px;
+      line-height: 32px;
+
+      .name, .size, .status, .remove {
+        display: inline-block;
+        position: absolute;
+      }
+
+      .name {
+        padding-left: 8px;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      .size {
+        right: 40px;
+        text-align: right;
+        font-size: 10pt;
+        color: #bbb;
+      }
+
+      .status {
+        top: 4px;
+        right: 8px;
+        width: 24px;
+        height: 24px;
+        background-size: contain;
+        background-repeat: no-repeat;
+      }
+
+      .fade {
+        display: none;
+      }
+
+      &.fs-file {
+
+        a {
+          color: @blue;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        .status {
+
+          .bin();
+          opacity: 0.4;
+          cursor: pointer;
+          .transition(opacity 0.3s);
+
+          &:hover {
+            opacity: 1;
+          }
+        }
+      }
+
+      &.uploaded {
+
+        .status {
+          .tick('00bb33');
+        }
+      }
+
+      &.uploading {
+
+        .status {
+          .uploading();
+        }
+      }
+
+      &.failed {
+
+        .status {
+          .transform(rotate(45deg));
+          .cross('FF0000');
+        }
+      }
+    }
+  }
+
+  .file-queue {
+    display: none;
+  }
+}
+
+@media(max-width: 768px){
+  .browser {
+
+    .file-queue, .file-system {
+      margin-top: 32px;
+
+      .file {
+
+        .name {
+          padding: 0;
+          width: ~"calc(100% - 64px)";
+        }
+
+        .size {
+          right: 24px;
+        }
+
+        .status {
+          right: 0px;
+        }
+
+        .fade {
+          .gradient-horizontal(rgba(255,255,255,0), rgba(255,255,255,1));
+          position: absolute;
+          top: 0;
+          right: 64px;
+          display: block;
+          width: 32px;
+          height: 30px;
+          z-index: 1;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+}
+
+@media(max-width: 480px){
+  .browser {
+
+    #dropbox {
+
+      .add-btn {
+        max-width: 50%;
+      }
+
+      .overwrite {
+        right: -8px;
+        bottom: -35px;
+      }
+    }
+  }
+}
+
+
