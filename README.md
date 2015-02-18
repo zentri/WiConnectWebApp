@@ -22,11 +22,15 @@ npm install
 
 ## Development Testing
 
-```grunt```
+```
+grunt
+```
 
 Will run a local nodejs server on port 5002 for testing.
 
-```grunt watch```
+```
+grunt watch
+```
 
 Will start a task that listens for file changes, and compile/compress HTML, CSS and JS
 
@@ -41,7 +45,9 @@ The WiConnect WebApp has been primarily developed using [Jade templating](http:/
 
 If you are unfamiliar with Jade and wish to write traditional HTML run the following grunt task:
 
-```grunt no-jade```
+```
+runt no-jade
+```
 
 This will create the files `public/html/index.html` and `public/html/unauthorized.html` for development.
 
@@ -50,7 +56,9 @@ _Note: Running this grunt task again will overwrite any changes made to `index.h
 #### `no-less`
 If you are unfamiliar with LESS and wish to write traditional CSS run the following grunt task:
 
-```grunt no-less```
+```
+grunt no-less
+```
 
 This will create the file `public/css/wiconnect.css` for development.
 
@@ -59,7 +67,9 @@ _Note: Running this grunt task again will overwrite any changes made to `wiconne
 
 ## Build / Compile
 
-```grunt build```
+```
+grunt build
+```
 
 Compiled and compressed JS, CSS and HTML files will be exported to `/out`
 
@@ -71,7 +81,9 @@ If the file `public/css/wiconnect.css` exists, it will be used in the build proc
 
 ## Release
 
-```grunt release:[type]```
+```
+grunt release:[type]
+```
 
 Release an official major|minor|patch verion.
 When the task is run, the project version is updated and the release will be committed and tagged with the appropriate version, and all files packaged into `/out/release/Release-[version].zip`
