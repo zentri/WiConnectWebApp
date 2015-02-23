@@ -46,7 +46,7 @@ The WiConnect WebApp has been primarily developed using [Jade templating](http:/
 If you are unfamiliar with Jade and wish to write traditional HTML run the following grunt task:
 
 ```
-runt no-jade
+grunt no-jade
 ```
 
 This will create the files `public/html/index.html` and `public/html/unauthorized.html` for development.
