@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 module.exports = function(grunt) {
@@ -81,9 +81,6 @@ module.exports = function(grunt) {
       build: {
         mangle: true,
         compress: true,
-        // options: {
-        //   sourceMap: true,
-        // },
         files: {
           'out/webapp/wiconnect.js':
             [
@@ -141,10 +138,15 @@ module.exports = function(grunt) {
         }
       },
       js: {
-        files: ['public/js/*.js', 'public/js/**/*.js', 'public/vendor/wiconnect.js'],
-        tasks: ['jshint', 'git-describe', 'uglify:build', 'compress:build'],
+        files: ['public/js/*.js', 'public/js/**/*.js'],
+        tasks: [
+          'jshint', 'git-describe',
+          'buildCopy:dev', 'string-replace:dev',
+          'uglify:build', 'compress:build',
+          'buildCleanup:dev'],
         options: {
-          interupt: true
+          interupt: true,
+          debounceDelay: 5000
         }
       },
       html: {
@@ -163,9 +165,9 @@ module.exports = function(grunt) {
       annotate: false,
     },
     bumpup: {
-        file: 'package.json'
+      file: 'package.json'
     },
-    "git-describe": {
+    'git-describe': {
       options: {},
       build: {}
     },
@@ -177,6 +179,26 @@ module.exports = function(grunt) {
       pushTags: {
         command: 'git push origin --tags'
       }
+    },
+    'string-replace': {
+      dev: {
+        files: {
+          'public/js/app.js': 'public/js/app.js'
+        },
+        options: {
+          replacements: [{
+            pattern: '/*deviceHost*/',
+            replacement: 'self.device.set({host: "http://<%= device.host %>"});'
+          }]
+        }
+      },
+      deploy: {}
+    },
+    http: {
+      index: {options: {url: 'http://<%= device.host %>/command/http_download%20http://<%= local.ip %>:<%= local.port%>/index.html%20webapp/index.html', } },
+      js: {options: {url: 'http://<%= device.host %>/command/http_download%20http://<%= local.ip %>:<%= local.port%>/webapp/wiconnect.js.gz%20webapp/wiconnect.js.gz', } },
+      css: {options: {url: 'http://<%= device.host %>/command/http_download%20http://<%= local.ip %>:<%= local.port%>/webapp/wiconnect.css.gz%20webapp/wiconnect.css.gz', } },
+      unauth: {options: {url: 'http://<%= device.host %>/command/http_download%20http://<%= local.ip %>:<%= local.port%>/webapp/unauthorized.html%20webapp/unauthorized.html', } }
     }
   });
 
@@ -192,41 +214,50 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-tagrelease');
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-htmlclean');
+  grunt.loadNpmTasks('grunt-string-replace');
+  grunt.loadNpmTasks('grunt-http');
 
   grunt.event.once('git-describe', function (rev) {
     var pkg = grunt.file.readJSON('package.json');
+
+    grunt.config.set('pkg', pkg);
+
+    var config = grunt.file.readJSON('config.json');
+    grunt.config.set('device.host', config.device);
+
+    // build webapp version date & hash into complied js
     grunt.file.write(
       'public/js/version.js',
-      'var _webapp = '
-        + '{'
-          + 'date:"' + new Date().toISOString() + '", '
-          + 'hash:"' + rev.object + '", '
-          + 'version: "' + pkg.version +'"'
-        +'};',
+      'var _webapp = {date:"' + new Date().toISOString() + '", hash:"' + rev.object + '", version: "' + pkg.version +'"};',
+      {encoding: 'utf8'});
+
+    // version.json for cloudfront autoupdate & metrics
+    grunt.file.write(
+      'out/version.json',
+      '{"version": "' + pkg.version + '"}',
       {encoding: 'utf8'});
   });
-
-  grunt.registerTask('no-jade', []); //TBC
-  grunt.registerTask('no-less', []); //TBC
 
   grunt.registerTask('lint', ['jshint']);
 
   grunt.registerTask('embed-hash', ['git-describe']);
 
-  grunt.registerTask('build', function() {
+  grunt.registerTask('build', function(type) {
+    type = type ? type : '';
 
     if(!grunt.file.isDir('out/')) {
       grunt.log.writeln('Created output directory.');
-      grunt.file.mkdir('out/')
+      grunt.file.mkdir('out/');
     }
 
     if(!grunt.file.isDir('out/webapp/')) {
       grunt.log.writeln('Created output directory.');
-      grunt.file.mkdir('out/webapp/')
+      grunt.file.mkdir('out/webapp/');
     }
 
     var htmlTask = 'jade:build',
-        cssTask  = 'less:build';
+        cssTask  = 'less:build',
+        hostTask = 'string-replace:deploy';
 
     if(grunt.file.isDir('public/html/')){
       htmlTask = 'htmlclean:build';
@@ -236,11 +267,32 @@ module.exports = function(grunt) {
       cssTask = 'less:css';
     }
 
+    if(type === 'dev') {
+      // set remote device host
+      hostTask = 'string-replace:dev';
+    }
+
     grunt.task.run([
-      'embed-hash', 'lint',
+      'embed-hash', 'lint', 'buildCopy:' + type, hostTask,
       'uglify:build', cssTask, htmlTask,
-      'compress:build'
+      'compress:build', 'buildCleanup:' + type
     ]);
+  });
+
+  grunt.registerTask('buildCopy', function(type){
+    if(type === 'dev') {
+      grunt.file.copy('public/js/app.js', 'public/js/.app.js');
+    }
+  });
+
+  grunt.registerTask('buildCleanup', function(type){
+    type = type ? type : '';
+
+    if(type === 'dev') {
+      grunt.file.delete('public/js/app.js');
+      grunt.file.copy('public/js/.app.js', 'public/js/app.js');
+      grunt.file.delete('public/js/.app.js');
+    }
   });
 
   grunt.registerTask('no-jade', function() {
@@ -278,6 +330,16 @@ module.exports = function(grunt) {
     grunt.log.writeln('--------------------------------------');
   });
 
+  grunt.registerTask('deploy', function(){
+    var config = grunt.file.readJSON('config.json');
+
+    grunt.config.set('device.host', config.device);
+    grunt.config.set('local.ip', config.localIP);
+    grunt.config.set('local.port', config.port);
+
+    grunt.task.run(['build', 'http:index', 'http:js', 'http:css', 'http:unauth']);
+  });
+
   grunt.registerTask('server', 'Start express server', function() {
     require('./server.js').listen(5002, function () {
       grunt.log.writeln('Web server running at http://localhost:5002.');
@@ -289,4 +351,4 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('default', ['build', 'server']);
-}
+};

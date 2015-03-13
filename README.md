@@ -19,14 +19,17 @@ bower install
 npm install
 ```
 
-
 ## Development Testing
+
+To sucessfully communicate with a remote device, the WiConnect variable `http.server.cors_origin` needs to be set as described by the [WiConnectJS documentation](https://github.com/ackme/WiConnectJS).
+
+If a grunt task fails to run and an error about missing packages is displayed, you may need to run `npm install` to install any missing packages.
 
 ```
 grunt
 ```
 
-Will run a local nodejs server on port 5002 for testing.
+Will run a local nodejs server on port 5002 (by default - see Development Options) for testing.
 
 ```
 grunt watch
@@ -34,19 +37,20 @@ grunt watch
 
 Will start a task that listens for file changes, and compile/compress HTML, CSS and JS
 
-When developing on a local server and communicating with a remote device, set the option `host:'[device IP]'` when creating the device model in `/public/js/app.js`. To sucessfully communicate with a remote device, the WiConnect variable `http.server.cors_origin` needs to be set as described by the [WiConnectJS documentation](https://github.com/ackme/WiConnectJS).
-
-If a grunt task fails to run and an error about missing packages is displayed, you may need to run `npm install` to install any missing packages.
-
 ### Development Options
 
+#### Config.json
+
+Edit `config.json` to specify the `localIP` address and `port` for running a development server, remote device IP address for the device to communicate with.
+
 The WiConnect WebApp has been primarily developed using [Jade templating](http://jade-lang.com/) and [LESS CSS pre-processing language](http://lesscss.org/)
+
 #### `no-jade`
 
 If you are unfamiliar with Jade and wish to write traditional HTML run the following grunt task:
 
 ```
-grunt no-jade
+runt no-jade
 ```
 
 This will create the files `public/html/index.html` and `public/html/unauthorized.html` for development.
@@ -54,6 +58,7 @@ This will create the files `public/html/index.html` and `public/html/unauthorize
 _Note: Running this grunt task again will overwrite any changes made to `index.html` and `unauthorized.html`_
 
 #### `no-less`
+
 If you are unfamiliar with LESS and wish to write traditional CSS run the following grunt task:
 
 ```
@@ -78,6 +83,14 @@ Version, git hash, and build date information are automatically built into the c
 If the files `public/html/index.html` and `public/html/unauthorized.html` exist, they will be used in the build process, and the changes to the jade files will be ignored.
 
 If the file `public/css/wiconnect.css` exists, it will be used in the build process, and the changes to the less files will be ignored.
+
+## Deploy
+
+````
+grunt deploy
+````
+
+Put webapp files onto the device specified in `config.json`. This requires a server, the default `grunt` task to alread be running in another terminal.
 
 ## Release
 
