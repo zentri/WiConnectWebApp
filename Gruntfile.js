@@ -209,7 +209,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-compress');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-git-describe');
   grunt.loadNpmTasks('grunt-bumpup');
   grunt.loadNpmTasks('grunt-tagrelease');
   grunt.loadNpmTasks('grunt-shell');
@@ -217,7 +216,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-string-replace');
   grunt.loadNpmTasks('grunt-http');
 
-  grunt.event.once('git-describe', function (rev) {
+  grunt.registerTask('lint', ['jshint']);
+
+  grunt.registerTask('webappVer', function(){
     var pkg = grunt.file.readJSON('package.json');
 
     grunt.config.set('pkg', pkg);
@@ -228,19 +229,10 @@ module.exports = function(grunt) {
     // build webapp version date & hash into complied js
     grunt.file.write(
       'public/js/version.js',
-      'var _webapp = {date:"' + new Date().toISOString() + '", hash:"' + rev.object + '", version: "' + pkg.version +'"};',
+      'var _webapp = {date:"' + new Date().toISOString() + '", version: "' + pkg.version +'"};',
       {encoding: 'utf8'});
 
-    // version.json for cloudfront autoupdate & metrics
-    grunt.file.write(
-      'out/version.json',
-      '{"version": "' + pkg.version + '"}',
-      {encoding: 'utf8'});
   });
-
-  grunt.registerTask('lint', ['jshint']);
-
-  grunt.registerTask('embed-hash', ['git-describe']);
 
   grunt.registerTask('build', function(type) {
     type = type ? type : '';
@@ -273,7 +265,7 @@ module.exports = function(grunt) {
     }
 
     grunt.task.run([
-      'embed-hash', 'lint', 'buildCopy:' + type, hostTask,
+      'webappVer', 'lint', 'buildCopy:' + type, hostTask,
       'uglify:build', cssTask, htmlTask,
       'compress:build', 'buildCleanup:' + type
     ]);
