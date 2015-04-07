@@ -79,8 +79,11 @@ module.exports = function(grunt) {
     },
     uglify: {
       build: {
-        mangle: true,
-        compress: true,
+        options: {
+          mangle: true,
+          compress: {warnings: false},
+          // sourceMap: true
+        },
         files: {
           'out/webapp/wiconnect.js':
             [
