@@ -345,5 +345,5 @@ module.exports = function(grunt) {
     grunt.log.writeln(target + ': ' + filepath + ' has ' + action);
   });
 
-  grunt.registerTask('default', ['build', 'server']);
+  grunt.registerTask('default', ['build:dev', 'server']);
 };
