@@ -95,7 +95,7 @@ grunt deploy
 
 Put webapp files onto the device specified in `config.json` by `deviceAddress`. This requires the default `grunt` task to already be running in another terminal and accessible at the address specified by `localDevelopmentIP` in the config file.
 
-_Note: `grunt deploy` will silently fail if the `localDevelopmentIP` address is not configured correctly_
+_Note: `grunt deploy` will silently fail if the `localDevelopmentIP` address is not configured correctly in `config.json`._
 
 
 ## Release
