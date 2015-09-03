@@ -41,7 +41,10 @@ Will start a task that listens for file changes, and compile/compress HTML, CSS 
 
 #### Config.json
 
-Edit `config.json` to specify the `localIP` address and `port` for running a development server, remote device IP address for the device to communicate with.
+Edit `config.json` to specify:
+  - `localDevelopmentIP`: address (e.g. `12.34.56.89`) of a running local development server.
+  - `localDevelopmentPort`: port for local development server (the default grunt server runs on 5002).
+  - `deviceAddress`: address (e.g. `12.34.56.78` or `device.local`) of the device to communicate with.
 
 The WiConnect WebApp has been primarily developed using [Jade templating](http://jade-lang.com/) and [LESS CSS pre-processing language](http://lesscss.org/)
 
@@ -90,7 +93,10 @@ If the file `public/css/wiconnect.css` exists, it will be used in the build proc
 grunt deploy
 ````
 
-Put webapp files onto the device specified in `config.json`. This requires a server, the default `grunt` task to alread be running in another terminal.
+Put webapp files onto the device specified in `config.json` by `deviceAddress`. This requires the default `grunt` task to already be running in another terminal and accessible at the address specified by `localDevelopmentIP` in the config file.
+
+_Note: `grunt deploy` will silently fail if the `localDevelopmentIP` address is not configured correctly in `config.json`._
+
 
 ## Release
 
