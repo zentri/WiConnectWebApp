@@ -227,7 +227,7 @@ module.exports = function(grunt) {
     grunt.config.set('pkg', pkg);
 
     var config = grunt.file.readJSON('config.json');
-    grunt.config.set('device.host', config.device);
+    grunt.config.set('device.host', config.deviceAddress);
 
     // build webapp version date & hash into complied js
     grunt.file.write(
@@ -328,9 +328,9 @@ module.exports = function(grunt) {
   grunt.registerTask('deploy', function(){
     var config = grunt.file.readJSON('config.json');
 
-    grunt.config.set('device.host', config.device);
-    grunt.config.set('local.ip', config.localIP);
-    grunt.config.set('local.port', config.port);
+    grunt.config.set('device.host', config.deviceAddress);
+    grunt.config.set('local.ip', config.localDevelopmentIP);
+    grunt.config.set('local.port', config.localDevelopmentPort);
 
     grunt.task.run(['build', 'http:index', 'http:js', 'http:css', 'http:unauth']);
   });

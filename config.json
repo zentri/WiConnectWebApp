@@ -1,5 +1,5 @@
 {
-  "device": "12.34.56.78",
-  "localIP": "12.34.56.89",
-  "port": "5002"
+  "deviceAddress": "12.34.56.78",
+  "localDevelopmentIP": "12.34.56.89",
+  "localDevelopmentPort": "5002"
 }
