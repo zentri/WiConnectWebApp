@@ -10,3 +10,5 @@
 /out/webapp/index.html
 /out/webapp/unauthorized.html
 /out/webapp/*.map
+
+public/js/version.js

@@ -143,7 +143,7 @@ module.exports = function(grunt) {
       js: {
         files: ['public/js/*.js', 'public/js/**/*.js'],
         tasks: [
-          'jshint', 'git-describe',
+          'webappVer', 'jshint',
           'buildCopy:dev', 'string-replace:dev',
           'uglify:build', 'compress:build',
           'buildCleanup:dev'],
@@ -169,10 +169,6 @@ module.exports = function(grunt) {
     },
     bumpup: {
       file: 'package.json'
-    },
-    'git-describe': {
-      options: {},
-      build: {}
     },
     shell: {
       options: {
